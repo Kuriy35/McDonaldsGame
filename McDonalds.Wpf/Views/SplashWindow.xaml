@@ -1,0 +1,16 @@
+﻿<Window x:Class="McDonalds.Views.SplashWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Loading McDonald's Manager" Height="300" Width="400"
+        WindowStyle="None" WindowStartupLocation="CenterScreen"
+        Background="#FFEB3B" ResizeMode="NoResize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Text="McDonald's Manager" FontSize="36" FontWeight="Bold"
+                   HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#D32F2F"/>
+        <ProgressBar Grid.Row="1" Height="20" IsIndeterminate="True" Margin="20,10"/>
+    </Grid>
+</Window>

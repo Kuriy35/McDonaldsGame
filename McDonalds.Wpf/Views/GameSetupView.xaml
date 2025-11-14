@@ -1,0 +1,107 @@
+﻿<UserControl x:Class="McDonalds.Views.GameSetupView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:McDonalds.Views"
+             xmlns:models="clr-namespace:McDonalds.Models.Core;assembly=McDonalds.Data"
+             xmlns:converters="clr-namespace:McDonalds.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="768" d:DesignWidth="1024">
+
+    <UserControl.Resources>
+        <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="#FFEB3B" Offset="0"/>
+                <GradientStop Color="#FFC107" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Заголовок -->
+        <StackPanel Grid.Row="0" Margin="0,50,0,30">
+            <TextBlock Text="McDonald's Manager" Style="{StaticResource GameSetupTitleTextStyle}"/>
+            <TextBlock Text="Симулятор управління рестораном швидкого харчування" Style="{StaticResource GameSetupSubtitleTextStyle}"/>
+        </StackPanel>
+
+        <!-- Вибір складності -->
+        <Border Grid.Row="1" 
+                Background="White" 
+                CornerRadius="15" 
+                Margin="200,20" 
+                Padding="20"
+                BorderBrush="#E0E0E0"
+                BorderThickness="3">
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="Виберіть рівень складності:" Style="{StaticResource GameSetupDifficultyHeaderStyle}"/>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <RadioButton Content="Легкий" 
+                                 Style="{StaticResource DifficultyButtonStyle}" 
+                                 IsChecked="{Binding SelectedDifficulty, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static models:GameDifficulty.Easy}}"/>
+                    <RadioButton Content="Середній" 
+                                 Style="{StaticResource DifficultyButtonStyle}" 
+                                 IsChecked="{Binding SelectedDifficulty, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static models:GameDifficulty.Medium}}"/>
+                    <RadioButton Content="Складний" 
+                                 Style="{StaticResource DifficultyButtonStyle}" 
+                                 IsChecked="{Binding SelectedDifficulty, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static models:GameDifficulty.Hard}}"/>
+                </StackPanel>
+
+                <StackPanel Margin="0,50,0,0">
+                    <TextBlock Text="Особливості рівнів:"  Style="{StaticResource GameSetupSubtitleTextStyle}"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Легкий рівень -->
+                        <TextBlock Grid.Column="0" Grid.Row="0" Text="Легкий" Style="{StaticResource GameSetupLevelTitleStyle}"/>
+                        <TextBlock Grid.Column="0" Grid.Row="1" Text="- Менше клієнтів" Style="{StaticResource GameSetupLevelDescriptionStyle}"/>
+                        <TextBlock Grid.Column="0" Grid.Row="2" Text="- Більше часу на виконання" Style="{StaticResource GameSetupLevelDescriptionStyle}"/>
+                        <TextBlock Grid.Column="0" Grid.Row="3" Text="- Прості цілі" Style="{StaticResource GameSetupLevelDescriptionStyle}"/>
+
+                        <!-- Середній рівень -->
+                        <TextBlock Grid.Column="1" Grid.Row="0" Text="Середній" Style="{StaticResource GameSetupLevelTitleStyle}"/>
+                        <TextBlock Grid.Column="1" Grid.Row="1" Text="- Середня кількість клієнтів" Style="{StaticResource GameSetupLevelDescriptionStyle}"/>
+                        <TextBlock Grid.Column="1" Grid.Row="2" Text="- Стандартний час" Style="{StaticResource GameSetupLevelDescriptionStyle}"/>
+                        <TextBlock Grid.Column="1" Grid.Row="3" Text="- Помірні цілі" Style="{StaticResource GameSetupLevelDescriptionStyle}"/>
+
+                        <!-- Складний рівень -->
+                        <TextBlock Grid.Column="2" Grid.Row="0" Text="Складний" Style="{StaticResource GameSetupLevelTitleStyle}"/>
+                        <TextBlock Grid.Column="2" Grid.Row="1" Text="- Багато клієнтів" Style="{StaticResource GameSetupLevelDescriptionStyle}"/>
+                        <TextBlock Grid.Column="2" Grid.Row="2" Text="- Обмежений час" Style="{StaticResource GameSetupLevelDescriptionStyle}"/>
+                        <TextBlock Grid.Column="2" Grid.Row="3" Text="- Складні цілі" Style="{StaticResource GameSetupLevelDescriptionStyle}"/>
+                    </Grid>
+                </StackPanel>
+
+                <Button Content="Розпочати гру!" 
+                        Style="{StaticResource StartButtonStyle}" 
+                        Command="{Binding StartGameCommand}"
+                        HorizontalAlignment="Center" 
+                        Margin="0,40,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Футер -->
+        <TextBlock Grid.Row="2" 
+                   Text="© 2025 McDonald's Manager Simulator" Style="{StaticResource GameSetupFooterTextStyle}"/>
+    </Grid>
+</UserControl>

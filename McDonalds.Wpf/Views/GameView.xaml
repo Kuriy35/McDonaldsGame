@@ -1,0 +1,204 @@
+﻿<UserControl x:Class="McDonalds.Views.GameView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:McDonalds.Views"
+             xmlns:converters="clr-namespace:McDonalds.Converters"
+             xmlns:viewmodels="clr-namespace:McDonalds.ViewModels"
+             xmlns:views="clr-namespace:McDonalds.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="768" d:DesignWidth="1024">
+
+    <UserControl.Resources>
+        <DataTemplate DataType="{x:Type viewmodels:RestaurantViewModel}">
+            <views:RestaurantView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewmodels:KitchenViewModel}">
+            <views:KitchenView />
+        </DataTemplate>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:DivideBy100Converter x:Key="DivideBy100Converter" />
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Style="{StaticResource GameViewInfoPanelBorderStyle}">
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Vertical">
+                    <TextBlock Text="Час:" Style="{StaticResource RegularTextStyle}"/>
+                    <TextBlock>
+                        <Run Text="{Binding CurrentTime, StringFormat='{}{0:hh}:{0:mm}:{0:ss}'}"/>
+                        <Run Text=" / "/>
+                        <Run Text="{Binding WorkdayDuration, StringFormat='{}{0:hh}:{0:mm}:{0:ss}'}"/>
+                    </TextBlock>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Vertical">
+                    <TextBlock Text="Зароблено:" Style="{StaticResource RegularTextStyle}"/>
+                    <TextBlock Text="{Binding Money, StringFormat='{}{0:F2} $'}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Orientation="Vertical">
+                    <TextBlock Text="Задоволеність:" Style="{StaticResource RegularTextStyle}" Width="178"/>
+                    <ProgressBar Value="{Binding CustomerSatisfaction}" Maximum="1" Style="{StaticResource GameViewCustomerSatisfactionProgressStyle}"/>
+                    <TextBlock Text="{Binding CustomerSatisfaction, StringFormat=\{0:P0\}}" HorizontalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="3" Orientation="Vertical">
+                    <TextBlock Text="Активні клієнти:" Style="{StaticResource RegularTextStyle}"/>
+                    <TextBlock Text="{Binding ActiveCustomersCount}"/>
+                </StackPanel>
+
+                <Button Grid.Column="4" 
+                        Content="Завершити день" 
+                        Command="{Binding EndDayCommand}"
+                        Style="{StaticResource RedButtonStyle}"/>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Style="{StaticResource GameViewMainZoneBorderStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" Style="{StaticResource GameViewRestaurantHeaderBorderStyle}">
+                        <TextBlock Text="Зал ресторану" 
+                                   FontSize="18" 
+                                   FontWeight="Bold"
+                                   Foreground="White"/>
+                    </Border>
+
+                    <ContentControl Grid.Row="1" Content="{Binding RestaurantViewModel}"/>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1" Style="{StaticResource GameViewMainZoneBorderStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" Style="{StaticResource GameViewKitchenHeaderBorderStyle}">
+                        <TextBlock Text="Кухня" 
+                                   FontSize="18" 
+                                   FontWeight="Bold" 
+                                   Foreground="White"/>
+                    </Border>
+
+                    <ContentControl Grid.Row="1" Content="{Binding KitchenViewModel}"/>
+                </Grid>
+            </Border>
+
+            <Border x:Name="GoalsBorder" Grid.Column="0" Style="{StaticResource GameViewGoalsBorderStyle}"
+                    Visibility="{Binding GoalsVisibility}">
+                <StackPanel>
+                    <TextBlock Text="Цілі дня:" Style="{StaticResource GameViewProgressTextStyle}" Foreground="#3F51B5"/>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="• Заробити: " Style="{StaticResource GameViewProgressTextStyle}"/>
+                        <TextBlock Text="{Binding CurrentGoals.MinimumMoney, StringFormat='{}{0:F2} $'}" Style="{StaticResource GameViewProgressTextStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="• Задоволеність: " Style="{StaticResource GameViewProgressTextStyle}"/>
+                        <TextBlock Text="{Binding CurrentGoals.MinimumSatisfaction, StringFormat='{}{0}%'}" Style="{StaticResource GameViewProgressTextStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="• Час роботи: " Style="{StaticResource GameViewProgressTextStyle}"/>
+                        <TextBlock Text="{Binding CurrentGoals.WorkdayDuration, StringFormat='{}{0:hh}:{0:mm}:{0:ss}'}" Style="{StaticResource GameViewProgressTextStyle}"/>
+                    </StackPanel>
+
+                    <Separator Margin="0,5"/>
+                    <TextBlock Text="Прогрес:" Style="{StaticResource GameViewProgressTextStyle}"/>
+
+                    <Grid Margin="0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="105"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <ProgressBar Grid.Column="0" 
+                         Value="{Binding Money}" 
+                         Maximum="{Binding CurrentGoals.MinimumMoney}" 
+                         Style="{StaticResource GameViewGoalsProgressStyle}"/>
+                        <TextBlock Grid.Column="1" Style="{StaticResource GameViewProgressTextStyle}">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0:F2}/${1:F2}">
+                                    <Binding Path="Money"/>
+                                    <Binding Path="CurrentGoals.MinimumMoney"/>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </Grid>
+
+                    <Grid Margin="0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="105"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <ProgressBar Grid.Column="0" 
+                         Value="{Binding CustomerSatisfaction}" 
+                         Maximum="{Binding CurrentGoals.MinimumSatisfaction, Converter={StaticResource DivideBy100Converter}}" 
+                         Style="{StaticResource GameViewGoalsProgressStyle}"/>
+                        <TextBlock Grid.Column="1" Style="{StaticResource GameViewProgressTextStyle}">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0:P0}/{1}%">
+                                    <Binding Path="CustomerSatisfaction"/>
+                                    <Binding Path="CurrentGoals.MinimumSatisfaction"/>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Grid>
+                <Button Content="Сховати/Розгорнути цілі" Style="{StaticResource GameViewToggleGoalsButtonStyle}"
+                        Command="{Binding ToggleGoalsVisibilityCommand}" />
+            </Grid>
+        </Grid>
+
+        <Border Grid.Row="2" Style="{StaticResource GameViewStatusBarBorderStyle}">
+            <Grid Margin="10,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" 
+                           Text="{Binding StatusMessage}" 
+                           Style="{StaticResource RegularTextStyle}"/>
+
+                <Border Grid.Column="1" 
+                        Style="{StaticResource GameViewGameOverIndicatorStyle}"
+                        Visibility="{Binding IsGameOver, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock Text="ДЕНЬ ЗАВЕРШЕНО" Style="{StaticResource GameViewGameOverTextStyle}"/>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

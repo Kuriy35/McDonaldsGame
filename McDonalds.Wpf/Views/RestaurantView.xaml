@@ -1,0 +1,200 @@
+﻿<UserControl x:Class="McDonalds.Views.RestaurantView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:McDonalds.Views"
+             xmlns:converters="clr-namespace:McDonalds.Converters"
+             xmlns:vm="clr-namespace:McDonalds.ViewModels"
+             d:DataContext="{d:DesignInstance Type=vm:RestaurantViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:ObjectToVisibilityConverter x:Key="ObjectToVisibilityConverter" />
+        <converters:ProgressToColorConverter x:Key="ProgressToColorConverter" />
+        <converters:BooleanToBrushConverter x:Key="BooleanToBrushConverter"/>
+        <converters:BooleanToTextConverter x:Key="BooleanToTextConverter"/>
+        <converters:PatienceToColorConverter x:Key="PatienceToColorConverter"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Головна частина - зал ресторану -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="250"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Background="White"> 
+                <Canvas>
+                    <!-- Столи -->
+                    <ItemsControl ItemsSource="{Binding Tables}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="ContentPresenter">
+                                <Setter Property="Canvas.Left" Value="{Binding TablePosition.X}"/>
+                                <Setter Property="Canvas.Top" Value="{Binding TablePosition.Y}"/>
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel HorizontalAlignment="Center">
+                                    <Ellipse Style="{StaticResource TableEllipseStyle}"/>
+                                    <TextBlock Text="{Binding IsOccupied, Converter={StaticResource BooleanToTextConverter}}"
+                                               Style="{StaticResource RestaurantViewTableStatusStyle}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <!-- Клієнти -->
+                    <ItemsControl ItemsSource="{Binding Customers}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="ContentPresenter">
+                                <Setter Property="Canvas.Left" Value="{Binding CurrentPosition.X}"/>
+                                <Setter Property="Canvas.Top" Value="{Binding CurrentPosition.Y}"/>
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Клієнт -->
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Аватар клієнта -->
+                                        <Ellipse Grid.Row="0" Style="{StaticResource RestaurantViewCustomerAvatarStyle}">
+                                            <Ellipse.Fill>
+                                                <SolidColorBrush Color="{Binding Patience, Converter={StaticResource PatienceToColorConverter}}"/>
+                                            </Ellipse.Fill>
+                                        </Ellipse>
+
+                                        <!-- Статус клієнта -->
+                                        <TextBlock Grid.Row="1" Text="{Binding State.Type}" 
+                                                   Foreground="{Binding IsHappy, Converter={StaticResource BooleanToBrushConverter}}" 
+                                                   Style="{StaticResource RestaurantViewCustomerStatusStyle}"/>
+                                    </Grid>
+
+                                    <!-- Індикатор очікування та замовлення -->
+                                    <Border Grid.Row="1" Style="{StaticResource RestaurantViewCustomerIndicatorStyle}">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+
+                                            <!-- Прогрес очікування -->
+                                            <ProgressBar Grid.Row="0" Value="{Binding WaitTimeProgress}" 
+                                                         Maximum="1" Style="{StaticResource RestaurantViewCustomerProgressStyle}"
+                                                         Foreground="{Binding WaitTimeProgress, Converter={StaticResource ProgressToColorConverter}}"/>
+
+                                            <!-- Інформація про замовлення -->
+                                            <TextBlock Grid.Row="1" Text="{Binding CurrentOrder.Id, StringFormat='№{0}'}" 
+                                                       Style="{StaticResource RestaurantViewOrderInfoStyle}"
+                                                       Visibility="{Binding HasOrder, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Canvas>
+            </Border>
+
+            <!-- Каса та поточний клієнт -->
+            <Border Grid.Column="1" Style="{StaticResource RestaurantViewCounterBorderStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Заголовок каси -->
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Каса" Style="{StaticResource RestaurantViewCounterHeaderStyle}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding CustomerCount, StringFormat='Клієнтів: {0}'}" 
+                       Style="{StaticResource RestaurantViewCustomerCountStyle}"/>
+
+                    <!-- Поточний клієнт на касі -->
+                    <Border Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource RestaurantViewCurrentCustomerBorderStyle}"
+                            Visibility="{Binding CurrentCustomerAtCounter, Converter={StaticResource ObjectToVisibilityConverter}}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Інформація про клієнта -->
+                            <TextBlock Grid.Row="0" Text="Клієнт на касі:" Style="{StaticResource RestaurantViewCurrentCustomerHeaderStyle}"/>
+
+                            <!-- Замовлення -->
+                            <Border Grid.Row="1" Style="{StaticResource RestaurantViewOrderBorderStyle}"
+                                    Visibility="{Binding CurrentCustomerAtCounter.CurrentOrder, Converter={StaticResource ObjectToVisibilityConverter}}">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding CurrentCustomerAtCounter.CurrentOrder.Id, StringFormat='Замовлення №{0}'}" 
+                                               Style="{StaticResource KitchenViewOrderHeaderStyle}"/>
+                                    <ItemsControl ItemsSource="{Binding CurrentCustomerAtCounter.CurrentOrder.Products}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Name}" Style="{StaticResource RestaurantViewOrderProductNameStyle}"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <TextBlock Text="{Binding CurrentCustomerAtCounter.CurrentOrder.TotalPrice, StringFormat='Сума: {0:C}'}" 
+                                               Style="{StaticResource RestaurantViewOrderTotalStyle}"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Кнопки прийняття або відхилення замовлення -->
+                            <UniformGrid Grid.Row="3" Rows="1">
+                                <Button Content="Прийняти" 
+                                        Command="{Binding DataContext.AcceptOrderCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=local:GameView}}"
+                                        CommandParameter="{Binding CurrentCustomerAtCounter.CurrentOrder}"
+                                        Style="{StaticResource GreenButtonStyle}"/>
+                                <Button Content="Відхилити" 
+                                        Command="{Binding DataContext.RejectOrderCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=local:GameView}}"
+                                        CommandParameter="{Binding CurrentCustomerAtCounter.CurrentOrder}"
+                                        Style="{StaticResource RedButtonStyle}"/>
+                            </UniformGrid>
+                        </Grid>
+                    </Border>
+
+                    <!-- Повідомлення, якщо немає клієнтів на касі -->
+                    <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Text="Немає клієнтів на касі" 
+                               Style="{StaticResource RestaurantViewNoCustomersStyle}"
+                               Visibility="{Binding CurrentCustomerAtCounter, Converter={StaticResource ObjectToVisibilityConverter}, ConverterParameter=inverse}"/>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

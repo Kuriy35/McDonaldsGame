@@ -1,0 +1,6 @@
+@McDonalds.Api_HostAddress = http://localhost:5230
+
+GET {{McDonalds.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

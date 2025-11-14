@@ -1,0 +1,725 @@
+﻿<Application x:Class="McDonalds.Wpf.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:McDonalds.Wpf"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- ====================== Базові стилі для кнопок ====================== -->
+
+            <!-- Стиль за замовчуванням для кнопок -->
+            <Style x:Key="DefaultButtonStyle" TargetType="Button">
+                <Setter Property="Margin" Value="5"/>
+                <Setter Property="Padding" Value="10,5"/>
+                <Setter Property="Background" Value="#4CAF50"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" 
+                    BorderBrush="#333333" 
+                    BorderThickness="1" 
+                    CornerRadius="4"
+                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#388E3C"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="Background" Value="#1B5E20"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Background" Value="#CCCCCC"/>
+                                    <Setter Property="Foreground" Value="#666666"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Стиль для червоних кнопок -->
+            <Style x:Key="RedButtonStyle" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+                <Setter Property="Background" Value="#D32F2F"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" 
+                    BorderBrush="#333333" 
+                    BorderThickness="1" 
+                    CornerRadius="4"
+                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#B71C1C"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="Background" Value="#7F0000"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Background" Value="#CCCCCC"/>
+                                    <Setter Property="Foreground" Value="#666666"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Стиль для зелених кнопок -->
+            <Style x:Key="GreenButtonStyle" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+                <Setter Property="Background" Value="#388E3C"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" 
+        BorderBrush="#333333" 
+        BorderThickness="1" 
+        CornerRadius="4"
+        Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#2C6B2F"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="Background" Value="#1B5E20"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Background" Value="#E0E0E0"/>
+                                    <Setter Property="Foreground" Value="#B0B0B0"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- ====================== GameSetupView ====================== -->
+
+            <!-- Стиль для заголовка GameSetupView -->
+            <Style x:Key="GameSetupTitleTextStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="48"/>
+                <Setter Property="FontFamily" Value="Arial Black"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Foreground" Value="#D32F2F"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+            </Style>
+
+            <!-- Стиль для підзаголовків GameSetupView -->
+            <Style x:Key="GameSetupSubtitleTextStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="20"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="0,10,0,0"/>
+                <Setter Property="Foreground" Value="#333333"/>
+            </Style>
+
+            <!-- Стиль для заголовка вибору складності GameSetupView -->
+            <Style x:Key="GameSetupDifficultyHeaderStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="24"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="0,0,0,30"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+            </Style>
+
+            <!-- Стиль для назв рівнів GameSetupView -->
+            <Style x:Key="GameSetupLevelTitleStyle" TargetType="TextBlock">
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+            </Style>
+
+            <!-- Стиль для описів рівнів GameSetupView -->
+            <Style x:Key="GameSetupLevelDescriptionStyle" TargetType="TextBlock">
+                <Setter Property="TextWrapping" Value="Wrap"/>
+                <Setter Property="Margin" Value="10,5"/>
+            </Style>
+
+            <!-- Стиль для футера GameSetupView -->
+            <Style x:Key="GameSetupFooterTextStyle" TargetType="TextBlock">
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="0,10,0,20"/>
+                <Setter Property="Foreground" Value="#555555"/>
+            </Style>
+
+            <!-- Стиль для кнопок вибору складності -->
+            <Style x:Key="DifficultyButtonStyle" TargetType="RadioButton">
+                <Setter Property="Margin" Value="10"/>
+                <Setter Property="Padding" Value="15,10"/>
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="Background" Value="#FFC107"/>
+                <Setter Property="Foreground" Value="#333333"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="RadioButton">
+                            <Border Background="{TemplateBinding Background}" 
+                    BorderBrush="#333333" 
+                    BorderThickness="2" 
+                    CornerRadius="8"
+                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter Property="Background" Value="#FF5722"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Стиль для великої кнопки Почати гру -->
+            <Style x:Key="StartButtonStyle" TargetType="Button">
+                <Setter Property="Margin" Value="10"/>
+                <Setter Property="Padding" Value="25,15"/>
+                <Setter Property="FontSize" Value="24"/>
+                <Setter Property="Background" Value="#4CAF50"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" 
+                    BorderBrush="#333333" 
+                    BorderThickness="2" 
+                    CornerRadius="8"
+                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#388E3C"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="Background" Value="#1B5E20"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Стиль для Ellipse (столи) -->
+            <Style x:Key="TableEllipseStyle" TargetType="Ellipse">
+                <Setter Property="Width" Value="80"/>
+                <Setter Property="Height" Value="80"/>
+                <Setter Property="Stroke" Value="Black"/>
+                <Setter Property="StrokeThickness" Value="2"/>
+                <Setter Property="Fill" Value="AliceBlue"/>
+            </Style>
+
+            <!-- ====================== GameView ====================== -->
+
+            <!-- Стиль для кнопки "Сховати/Розгорнути цілі" -->
+            <Style x:Key="GameViewToggleGoalsButtonStyle" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+                <Setter Property="Width" Value="150"/>
+                <Setter Property="Height" Value="30"/>
+                <Setter Property="VerticalAlignment" Value="Top"/>
+            </Style>
+
+            <!-- Загальний стиль для TextBlock (звичайний текст) -->
+            <Style x:Key="RegularTextStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Margin" Value="5,0"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+            <!-- Стиль для Border верхньої панелі інформації -->
+            <Style x:Key="GameViewInfoPanelBorderStyle" TargetType="Border">
+                <Setter Property="Background" Value="#FFEB3B"/>
+                <Setter Property="BorderBrush" Value="#FFC107"/>
+                <Setter Property="BorderThickness" Value="0,0,0,2"/>
+            </Style>
+
+            <!-- Стиль для Border зони ресторану/кухні -->
+            <Style x:Key="GameViewMainZoneBorderStyle" TargetType="Border">
+                <Setter Property="BorderBrush" Value="#E0E0E0"/>
+                <Setter Property="BorderThickness" Value="0,0,1,0"/>
+                <Setter Property="Background" Value="#FFFDE7"/>
+            </Style>
+
+            <!-- Стиль для Border заголовка зони ресторану -->
+            <Style x:Key="GameViewRestaurantHeaderBorderStyle" TargetType="Border">
+                <Setter Property="Background" Value="#2196F3"/>
+                <Setter Property="Padding" Value="10,5"/>
+            </Style>
+
+            <!-- Стиль для Border заголовка зони кухні -->
+            <Style x:Key="GameViewKitchenHeaderBorderStyle" TargetType="Border">
+                <Setter Property="Background" Value="#FF9800"/>
+                <Setter Property="Padding" Value="10,5"/>
+            </Style>
+
+            <!-- Стиль для Border блоку цілей -->
+            <Style x:Key="GameViewGoalsBorderStyle" TargetType="Border">
+                <Setter Property="BorderBrush" Value="#3F51B5"/>
+                <Setter Property="BorderThickness" Value="2"/>
+                <Setter Property="Background" Value="#E8EAF6"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="Margin" Value="10,0,0,10"/>
+                <Setter Property="Padding" Value="10"/>
+                <Setter Property="CornerRadius" Value="5"/>
+                <Setter Property="MaxWidth" Value="250"/>
+                <Setter Property="Height" Value="185"/>
+                <Setter Property="VerticalAlignment" Value="Bottom"/>
+            </Style>
+
+            <!-- Стиль для Border нижньої панелі статусу -->
+            <Style x:Key="GameViewStatusBarBorderStyle" TargetType="Border">
+                <Setter Property="Background" Value="#E0E0E0"/>
+                <Setter Property="BorderBrush" Value="#BDBDBD"/>
+                <Setter Property="BorderThickness" Value="0,1,0,0"/>
+            </Style>
+
+            <!-- Стиль для Border індикатора закінчення гри -->
+            <Style x:Key="GameViewGameOverIndicatorStyle" TargetType="Border">
+                <Setter Property="Background" Value="#D32F2F"/>
+                <Setter Property="Padding" Value="10,5"/>
+                <Setter Property="CornerRadius" Value="4"/>
+            </Style>
+
+            <!-- Стиль для TextBlock індикатора закінчення гри -->
+            <Style x:Key="GameViewGameOverTextStyle" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+            </Style>
+
+            <!-- Стиль для ProgressBar задоволеності клієнтів -->
+            <Style x:Key="GameViewCustomerSatisfactionProgressStyle" TargetType="ProgressBar">
+                <Setter Property="Height" Value="20"/>
+                <Setter Property="Width" Value="177"/>
+            </Style>
+
+            <!-- Стиль для ProgressBar прогресу по цілях -->
+            <Style x:Key="GameViewGoalsProgressStyle" TargetType="ProgressBar">
+                <Setter Property="Foreground" Value="#FF9800"/>
+                <Setter Property="Height" Value="15"/>
+                <Setter Property="Width" Value="105"/>
+            </Style>
+
+            <!-- Стиль для TextBlock прогресу цілей -->
+            <Style x:Key="GameViewProgressTextStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="Margin" Value="5,0,0,0"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+            </Style>
+
+            <!-- ====================== KitchenView ====================== -->
+
+            <!-- Стиль для синьої кнопки "Видати замовлення" -->
+            <Style x:Key="KitchenViewServeButtonStyle" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+                <Setter Property="Background" Value="#2196F3"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Margin" Value="0,5,0,0"/>
+                <Setter Property="Padding" Value="5,3"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="#333333" 
+                                BorderThickness="1" 
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#1976D2"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="Background" Value="#0D47A1"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Background" Value="#CCCCCC"/>
+                                    <Setter Property="Foreground" Value="#666666"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Стиль для кнопки "Зібрати замовлення" -->
+            <Style x:Key="KitchenViewAssembleButtonStyle" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+                <Setter Property="Margin" Value="0,5,0,0"/>
+                <Setter Property="Padding" Value="5,3"/>
+            </Style>
+
+            <!-- Стиль для кнопки "Забрати продукт" -->
+            <Style x:Key="KitchenViewTakeProductButtonStyle" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+                <Setter Property="Background" Value="#1976D2"/>
+                <Setter Property="BorderBrush" Value="#77DD77"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="1" 
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#8936D1"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="Background" Value="#A5D6A7"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Background" Value="#CCCCCC"/>
+                                    <Setter Property="Foreground" Value="#555555"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Стиль для Border доступних ресурсів -->
+            <Style x:Key="KitchenViewResourcesBorderStyle" TargetType="Border">
+                <Setter Property="Background" Value="#FFFDF0"/>
+                <Setter Property="BorderBrush" Value="#FFE0C0"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Margin" Value="5"/>
+            </Style>
+
+            <!-- Стиль для заголовка "Доступні ресурси" і "Готові продукти" -->
+            <Style x:Key="KitchenViewSectionHeaderStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="Margin" Value="10,10,10,5"/>
+            </Style>
+
+            <!-- Стиль для заголовка "Кухня" -->
+            <Style x:Key="KitchenViewKitchenHeaderStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="20"/>
+                <Setter Property="Margin" Value="10"/>
+            </Style>
+
+            <!-- Стиль для заголовка "Черга замовлень" -->
+            <Style x:Key="KitchenViewOrderQueueHeaderStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="Margin" Value="10"/>
+            </Style>
+
+            <!-- Стиль для таблиці доступних ресурсів (DataGrid) -->
+            <Style x:Key="KitchenViewResourcesDataGridStyle" TargetType="DataGrid">
+                <Setter Property="Margin" Value="10,0,10,10"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="RowBackground" Value="Transparent"/>
+                <Setter Property="GridLinesVisibility" Value="None"/>
+                <Setter Property="HeadersVisibility" Value="Column"/>
+                <Setter Property="CanUserAddRows" Value="False"/>
+                <Setter Property="CanUserDeleteRows" Value="False"/>
+                <Setter Property="CanUserResizeRows" Value="False"/>
+                <Setter Property="AutoGenerateColumns" Value="False"/>
+                <Setter Property="IsReadOnly" Value="True"/>
+            </Style>
+
+            <!-- Стиль для заголовків стовпців DataGrid -->
+            <Style x:Key="KitchenViewDataGridHeaderStyle" TargetType="DataGridColumnHeader">
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                <Setter Property="Padding" Value="5"/>
+                <Setter Property="Background" Value="#FFFDF0"/>
+                <Setter Property="BorderBrush" Value="#FFE0C0"/>
+                <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            </Style>
+
+            <!-- Стиль для TextBlock назви ресурсу -->
+            <Style x:Key="KitchenViewResourceNameStyle" TargetType="TextBlock">
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Width" Value="130"/>
+            </Style>
+
+            <!-- Стиль для TextBlock кількості ресурсу -->
+            <Style x:Key="KitchenViewResourceQuantityStyle" TargetType="TextBlock">
+                <Setter Property="Width" Value="50"/>
+                <Setter Property="HorizontalAlignment" Value="Right"/>
+            </Style>
+
+            <!-- Стиль для Border обладнання -->
+            <Style x:Key="KitchenViewEquipmentBorderStyle" TargetType="Border">
+                <Setter Property="Width" Value="120"/>
+                <Setter Property="Height" Value="120"/>
+                <Setter Property="Margin" Value="5"/>
+                <Setter Property="Background" Value="#FFFFFF"/>
+                <Setter Property="BorderThickness" Value="2"/>
+                <Setter Property="CornerRadius" Value="5"/>
+            </Style>
+
+            <!-- Стиль для TextBlock назви обладнання -->
+            <Style x:Key="KitchenViewEquipmentNameStyle" TargetType="TextBlock">
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="0,5,0,0"/>
+            </Style>
+
+            <!-- Стиль для Border іконки обладнання -->
+            <Style x:Key="KitchenViewEquipmentIconBorderStyle" TargetType="Border">
+                <Setter Property="Width" Value="70"/>
+                <Setter Property="Height" Value="50"/>
+                <Setter Property="Margin" Value="0,5"/>
+            </Style>
+
+            <!-- Стиль для ProgressBar обладнання -->
+            <Style x:Key="KitchenViewEquipmentProgressStyle" TargetType="ProgressBar">
+                <Setter Property="Height" Value="10"/>
+                <Setter Property="Margin" Value="5"/>
+            </Style>
+
+            <!-- Стиль для TextBlock "Готово!" -->
+            <Style x:Key="KitchenViewReadyTextStyle" TargetType="TextBlock">
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Foreground" Value="YellowGreen"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="0,2"/>
+            </Style>
+
+            <!-- Стиль для TextBlock "Забрати продукт" -->
+            <Style x:Key="KitchenViewTakeProductTextStyle" TargetType="TextBlock">
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="0,2"/>
+            </Style>
+
+            <!-- Стиль для Border у Popup -->
+            <Style x:Key="KitchenViewPopupBorderStyle" TargetType="Border">
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="BorderBrush" Value="#DDDDDD"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Width" Value="235"/>
+                <Setter Property="Padding" Value="8"/>
+                <Setter Property="CornerRadius" Value="5"/>
+            </Style>
+
+            <!-- Стиль для заголовка у Popup -->
+            <Style x:Key="KitchenViewPopupHeaderStyle" TargetType="TextBlock">
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="0,0,0,8"/>
+            </Style>
+
+            <!-- Стиль для ListBox у Popup -->
+            <Style x:Key="KitchenViewPopupListBoxStyle" TargetType="ListBox">
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="MaxHeight" Value="200"/>
+                <Setter Property="Margin" Value="0,0,0,8"/>
+            </Style>
+
+            <!-- Стиль для Grid у ListBox.ItemTemplate -->
+            <Style x:Key="KitchenViewPopupItemGridStyle" TargetType="Grid">
+                <Setter Property="Margin" Value="5,2"/>
+            </Style>
+
+            <!-- Стиль для TextBlock "недоступно" у Popup -->
+            <Style x:Key="KitchenViewPopupNotAvailableStyle" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="Red"/>
+            </Style>
+
+            <!-- Стиль для Border готових продуктів -->
+            <Style x:Key="KitchenViewReadyProductsBorderStyle" TargetType="Border">
+                <Setter Property="Background" Value="#F0F8FF"/>
+                <Setter Property="BorderBrush" Value="#DDDDDD"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Margin" Value="5"/>
+            </Style>
+
+            <!-- Стиль для Grid у ItemsControl готових продуктів -->
+            <Style x:Key="KitchenViewReadyProductsGridStyle" TargetType="Grid">
+                <Setter Property="Margin" Value="10,0,10,10"/>
+            </Style>
+
+            <!-- Стиль для Border у ItemsControl.ItemTemplate готових продуктів -->
+            <Style x:Key="KitchenViewReadyProductItemStyle" TargetType="Border">
+                <Setter Property="Width" Value="100"/>
+                <Setter Property="Height" Value="60"/>
+                <Setter Property="Margin" Value="3"/>
+                <Setter Property="Background" Value="#EEFFEE"/>
+                <Setter Property="BorderBrush" Value="#CCDDCC"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="CornerRadius" Value="3"/>
+            </Style>
+
+            <!-- Стиль для TextBlock назви продукту в готових продуктах -->
+            <Style x:Key="KitchenViewReadyProductNameStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="TextWrapping" Value="Wrap"/>
+                <Setter Property="TextAlignment" Value="Center"/>
+                <Setter Property="MaxWidth" Value="90"/>
+            </Style>
+
+            <!-- Стиль для TextBlock стану та кількості продукту -->
+            <Style x:Key="KitchenViewReadyProductStateStyle" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="#339933"/>
+            </Style>
+
+            <!-- Стиль для TextBlock кількості продукту -->
+            <Style x:Key="KitchenViewReadyProductQuantityStyle" TargetType="TextBlock" BasedOn="{StaticResource KitchenViewReadyProductStateStyle}">
+                <Setter Property="FontWeight" Value="Bold"/>
+            </Style>
+
+            <!-- Стиль для Border черги замовлень -->
+            <Style x:Key="KitchenViewOrderQueueBorderStyle" TargetType="Border">
+                <Setter Property="Background" Value="#FFFFFF"/>
+                <Setter Property="BorderBrush" Value="#DDDDDD"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Margin" Value="5"/>
+            </Style>
+
+            <!-- Стиль для Border у ItemsControl.ItemTemplate черги замовлень -->
+            <Style x:Key="KitchenViewOrderItemBorderStyle" TargetType="Border">
+                <Setter Property="Width" Value="250"/>
+                <Setter Property="Margin" Value="5,0"/>
+                <Setter Property="Padding" Value="10"/>
+                <Setter Property="Background" Value="#F9F9F9"/>
+                <Setter Property="BorderBrush" Value="#DDDDDD"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="CornerRadius" Value="5"/>
+            </Style>
+
+            <!-- Стиль для TextBlock заголовка та ціни замовлення -->
+            <Style x:Key="KitchenViewOrderHeaderStyle" TargetType="TextBlock">
+                <Setter Property="FontWeight" Value="Bold"/>
+            </Style>
+
+            <!-- Стиль для ScrollViewer у ItemsControl.ItemTemplate -->
+            <Style x:Key="KitchenViewOrderProductsScrollStyle" TargetType="ScrollViewer">
+                <Setter Property="Margin" Value="0,5"/>
+            </Style>
+
+            <!-- Стиль для Grid у ItemsControl.ItemTemplate продуктів замовлення -->
+            <Style x:Key="KitchenViewOrderProductItemStyle" TargetType="Grid">
+                <Setter Property="Margin" Value="0,2"/>
+            </Style>
+
+            <!-- ====================== RestaurantView ====================== -->
+
+            <!-- Стиль для заголовка залу ресторану -->
+            <Style x:Key="RestaurantViewHallHeaderStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="20"/>
+            </Style>
+
+            <!-- Стиль для TextBlock кількості клієнтів -->
+            <Style x:Key="RestaurantViewCustomerCountStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+            <!-- Стиль для TextBlock статусу столу -->
+            <Style x:Key="RestaurantViewTableStatusStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="0,4,0,0"/>
+            </Style>
+
+            <!-- Стиль для Ellipse аватара клієнта -->
+            <Style x:Key="RestaurantViewCustomerAvatarStyle" TargetType="Ellipse">
+                <Setter Property="Width" Value="50"/>
+                <Setter Property="Height" Value="50"/>
+                <Setter Property="Margin" Value="0,5,0,0"/>
+            </Style>
+
+            <!-- Стиль для TextBlock статусу клієнта -->
+            <Style x:Key="RestaurantViewCustomerStatusStyle" TargetType="TextBlock">
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Margin" Value="0,2"/>
+            </Style>
+
+            <!-- Стиль для Border індикатора очікування клієнта -->
+            <Style x:Key="RestaurantViewCustomerIndicatorStyle" TargetType="Border">
+                <Setter Property="Width" Value="80"/>
+                <Setter Property="Background" Value="#FFFFFF"/>
+                <Setter Property="BorderBrush" Value="#DDDDDD"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="CornerRadius" Value="3"/>
+                <Setter Property="Margin" Value="0,2"/>
+            </Style>
+
+            <!-- Стиль для ProgressBar очікування клієнта -->
+            <Style x:Key="RestaurantViewCustomerProgressStyle" TargetType="ProgressBar">
+                <Setter Property="Height" Value="8"/>
+                <Setter Property="Margin" Value="5,3"/>
+            </Style>
+
+            <!-- Стиль для TextBlock інформації про замовлення клієнта -->
+            <Style x:Key="RestaurantViewOrderInfoStyle" TargetType="TextBlock">
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="0,0,0,3"/>
+            </Style>
+
+            <!-- Стиль для Border каси -->
+            <Style x:Key="RestaurantViewCounterBorderStyle" TargetType="Border">
+                <Setter Property="Background" Value="#FFFFFF"/>
+                <Setter Property="BorderBrush" Value="#DDDDDD"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Margin" Value="5"/>
+            </Style>
+
+            <!-- Стиль для заголовка каси -->
+            <Style x:Key="RestaurantViewCounterHeaderStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="Margin" Value="10"/>
+            </Style>
+
+            <!-- Стиль для Border поточного клієнта на касі -->
+            <Style x:Key="RestaurantViewCurrentCustomerBorderStyle" TargetType="Border">
+                <Setter Property="Background" Value="#FFF8E1"/>
+                <Setter Property="BorderBrush" Value="#FFE082"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Margin" Value="10,0,10,10"/>
+                <Setter Property="Padding" Value="10"/>
+                <Setter Property="CornerRadius" Value="5"/>
+            </Style>
+
+            <!-- Стиль для TextBlock "Клієнт на касі" -->
+            <Style x:Key="RestaurantViewCurrentCustomerHeaderStyle" TargetType="TextBlock">
+                <Setter Property="FontWeight" Value="Bold"/>
+            </Style>
+
+            <!-- Стиль для Border замовлення на касі -->
+            <Style x:Key="RestaurantViewOrderBorderStyle" TargetType="Border">
+                <Setter Property="Background" Value="#FFFFFF"/>
+                <Setter Property="BorderBrush" Value="#DDDDDD"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Margin" Value="0,5"/>
+                <Setter Property="Padding" Value="5"/>
+                <Setter Property="CornerRadius" Value="3"/>
+            </Style>
+
+            <!-- Стиль для TextBlock назви продукту в замовленні -->
+            <Style x:Key="RestaurantViewOrderProductNameStyle" TargetType="TextBlock">
+                <Setter Property="Margin" Value="5,2"/>
+            </Style>
+
+            <!-- Стиль для TextBlock суми замовлення -->
+            <Style x:Key="RestaurantViewOrderTotalStyle" TargetType="TextBlock">
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Margin" Value="0,5,0,0"/>
+            </Style>
+
+            <!-- Стиль для TextBlock "Немає клієнтів на касі" -->
+            <Style x:Key="RestaurantViewNoCustomersStyle" TargetType="TextBlock">
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Foreground" Value="#757575"/>
+            </Style>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
