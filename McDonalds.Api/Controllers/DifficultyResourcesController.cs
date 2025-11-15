@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Annotations;
 using McDonalds.ViewModels.Api;
 
-namespace McDonalds.Controllers
+namespace McDonalds.Controllers6
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -29,6 +29,25 @@ namespace McDonalds.Controllers
         {
             var data = await _context.DifficultyResources.ToListAsync();
             return Ok(_mapper.Map<List<DifficultyResourceApiViewModel>>(data));
+        }
+
+        [HttpGet("{difficulty}")]
+        [SwaggerOperation(Summary = "Отримати всі ресурси для певної складності")]
+        public async Task<ActionResult<List<ResourceApiViewModel>>> GetByDifficulty(GameDifficulty difficulty)
+        {
+            var data = await _context.DifficultyResources
+                .Where(dr => dr.Difficulty == difficulty)
+                .ToListAsync();
+
+            var resources = data.Select(dr => new ResourceApiViewModel
+            {
+                Name = dr.ResourceName,
+                Quantity = dr.BaseQuantity,
+                BuyPrice = dr.BuyPrice,
+                SellPrice = dr.SellPrice
+            }).ToList();
+
+            return Ok(resources);
         }
 
         [HttpGet("{difficulty}/{resourceName}")]

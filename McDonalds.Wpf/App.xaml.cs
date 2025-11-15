@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using McDonalds.ViewModels;
 using McDonalds.Models.Core;
+using McDonalds.Mappings;
+using McDonalds.Wpf.Services;
 
 namespace McDonalds.Wpf
 {
@@ -31,8 +33,10 @@ namespace McDonalds.Wpf
                         client.BaseAddress = new Uri(config["ApiUrl"]);
                     });
 
+                    services.AddAutoMapper(typeof(ApiMappingProfile));
+
                     // ViewModels
-                    services.AddScoped<ResourceManager>();
+                    services.AddSingleton<ResourceManager>();
                     services.AddTransient<MainViewModel>();
                     services.AddTransient<ResourceViewModel>();
                 })

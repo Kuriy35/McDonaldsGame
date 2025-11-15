@@ -1,7 +1,6 @@
 using McDonalds.Data;
 using McDonalds.Repositories;
 using McDonalds.Mappings;
-using McDonalds.Models.Core;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

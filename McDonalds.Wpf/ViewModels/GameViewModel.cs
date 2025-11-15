@@ -36,7 +36,6 @@ namespace McDonalds.ViewModels
         private Visibility _goalsVisibility;
         private DispatcherTimer _timer;
         private ObservableCollection<ResourceViewModel> _resources;
-        private ResourceRepository _resourceRepository;
 
         public Visibility GoalsVisibility
         {
@@ -124,8 +123,13 @@ namespace McDonalds.ViewModels
             _gameManager = GameManager.Instance;
             _restaurantViewModel = new RestaurantViewModel();
             _kitchenViewModel = new KitchenViewModel();
-            _resourceRepository = App.Services.GetRequiredService<ResourceRepository>();
             _resources = new ObservableCollection<ResourceViewModel>();
+
+            Task.Run(async () =>
+            {
+                await ResourceManager.Instance.InitializeAsync();
+                await Application.Current.Dispatcher.InvokeAsync(LoadResources);
+            });
 
             AcceptOrderCommand = new RelayCommand(AcceptOrder);
             RejectOrderCommand = new RelayCommand(RejectOrder);
@@ -135,7 +139,7 @@ namespace McDonalds.ViewModels
             BuyCommand = new RelayCommand(Buy);
             SellCommand = new RelayCommand(Sell);
 
-            ResourceManager.ResourceQuantityChanged += OnResourceQuantityChanged;
+            ResourceManager.Instance.ResourceQuantityChanged += OnResourceQuantityChanged;
 
             GoalsVisibility = Visibility.Visible;
         }
@@ -166,23 +170,22 @@ namespace McDonalds.ViewModels
             }
         }
 
-        public void StartNewGame(GameDifficulty difficulty)
+        public async void StartNewGame(GameDifficulty difficulty)
         {
             _gameManager.StartGame(difficulty);
 
-            DifficultyFactory factory = DifficultyFactory.GetFactory(difficulty);
+            await ResourceManager.Instance.SetResourcesByDifficulty(difficulty);
+            await Application.Current.Dispatcher.InvokeAsync(LoadResources);
 
+            DifficultyFactory factory = DifficultyFactory.GetFactory(difficulty);
             Restaurant restaurant = _gameManager.CurrentRestaurant;
             _customerGenerator = factory.CreateCustomerGenerator();
-            factory.SetResources();
-            LoadResources();
 
             RestaurantViewModel = new RestaurantViewModel(restaurant);
             KitchenViewModel = new KitchenViewModel(restaurant.Kitchen);
             KitchenViewModel.SetGameViewModel(this);
 
             CurrentGoals = _gameManager.CurrentGoals;
-
             Money = _gameManager.Money;
             CurrentTime = _gameManager.CurrentTime;
             WorkdayDuration = _gameManager.WorkdayDuration;
@@ -334,13 +337,13 @@ namespace McDonalds.ViewModels
             GoalsVisibility = (GoalsVisibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
         }
 
-        private void LoadResources()
+        private async void LoadResources()
         {
             Resources.Clear();
-            var allResources = _resourceRepository.GetAll().ToList();
-            foreach (var resource in allResources)
+            var apiResources = ResourceManager.Instance.GetResourcesFromCache();
+            foreach (var r in apiResources)
             {
-                Resources.Add(new ResourceViewModel(resource));
+                Resources.Add(new ResourceViewModel(r));
             }
         }
         private void Buy(object parameter)

@@ -1,95 +1,112 @@
 ﻿using McDonalds.Models.Orders;
-using McDonalds.Repositories;
+using McDonalds.ViewModels.Api;
 using Microsoft.Extensions.DependencyInjection;
+using AutoMapper;
 using McDonalds.Wpf;
+using McDonalds.Wpf.Services;
 
 namespace McDonalds.Models.Core
 {
     public class ResourceManager
     {
+        private static readonly Lazy<ResourceManager> _lazy = new(() =>
+             App.Services.GetRequiredService<ResourceManager>()); // ← Тепер через DI!
 
-        private static ResourceManager? _instance;
-        public static ResourceManager Instance => _instance ??= CreateInstance();
+        public static ResourceManager Instance => _lazy.Value;
 
-        private readonly ResourceRepository _repo;
+        private readonly ApiService _apiService;
+        private readonly IMapper _mapper;
+        private readonly Dictionary<string, Resource> _cache = new();
 
-        public static event Action<string, int> ResourceQuantityChanged = delegate { };
+        public event Action<string, int>? ResourceQuantityChanged;
 
-        private ResourceManager() : this(null!) { }
-
-        private ResourceManager(ResourceRepository repo)
+        // КОНСТРУКТОР ТІЛЬКИ ДЛЯ DI
+        public ResourceManager(ApiService apiService, IMapper mapper)
         {
-            _repo = repo;
+            _apiService = apiService;
+            _mapper = mapper;
         }
 
-        private static ResourceManager CreateInstance()
+        public async Task InitializeAsync()
         {
-            var repo = App.Services.GetRequiredService<ResourceRepository>();
-            return new ResourceManager(repo);
-        }
-
-        public void SetResourcesByDifficulty(GameDifficulty difficulty)
-        {
-            var baseResources = _repo.GetDifficultyResources(difficulty);
-            foreach (var br in baseResources)
+            var apiResources = await _apiService.GetResourcesAsync();
+            _cache.Clear();
+            foreach (var apiRes in apiResources)
             {
-                _repo.UpdateResource(br.ResourceName, br.BaseQuantity, br.BuyPrice, br.SellPrice);
+                var resource = _mapper.Map<Resource>(apiRes); // ← МАПЕР!
+                _cache[resource.Name] = resource;
+            }
+        }
+
+        public async Task BuyResource(string name, int quantity)
+        {
+            if (_cache.TryGetValue(name, out var resource))
+            {
+                resource.Quantity += quantity;
+                var apiModel = _mapper.Map<ResourceApiViewModel>(resource);
+                await _apiService.UpdateResourceAsync(apiModel);
+                ResourceQuantityChanged?.Invoke(name, resource.Quantity);
+            }
+        }
+
+        public async Task SellResource(string name, int quantity)
+        {
+            if (_cache.TryGetValue(name, out var resource) && resource.Quantity >= quantity)
+            {
+                resource.Quantity -= quantity;
+                var apiModel = _mapper.Map<ResourceApiViewModel>(resource);
+                await _apiService.UpdateResourceAsync(apiModel);
+                ResourceQuantityChanged?.Invoke(name, resource.Quantity);
             }
         }
 
         public bool HasResources(Product product)
         {
-            if (product == null || product.RequiredResources == null)
-                return false;
-
-            foreach (var kvp in product.RequiredResources)
+            if (product?.RequiredResources == null) return false;
+            foreach (var (resName, required) in product.RequiredResources)
             {
-                var res = _repo.GetByName(kvp.Key);
-                if (res == null || res.Quantity < kvp.Value)
+                if (!_cache.TryGetValue(resName, out var res) || res.Quantity < required)
                     return false;
             }
             return true;
         }
 
-        public void ConsumeResources(Product product)
+        public async Task ConsumeResources(Product product)
         {
-            if (product == null || product.RequiredResources == null)
-                return;
-
-            foreach (var kvp in product.RequiredResources)
+            if (product?.RequiredResources == null) return;
+            foreach (var (resName, required) in product.RequiredResources)
             {
-                int newQuantity = _repo.Consume(kvp.Key, kvp.Value);
-                if (newQuantity >= 0)
+                if (_cache.TryGetValue(resName, out var res))
                 {
-                    ResourceQuantityChanged?.Invoke(kvp.Key, newQuantity);
+                    res.Quantity -= required;
+                    var apiModel = _mapper.Map<ResourceApiViewModel>(res);
+                    await _apiService.UpdateResourceAsync(apiModel);
+                    ResourceQuantityChanged?.Invoke(resName, res.Quantity);
                 }
             }
         }
 
-        public void BuyResource(string name, int quantity)
+        public async Task SetResourcesByDifficulty(GameDifficulty difficulty)
         {
-            var res = _repo.GetByName(name);
-            if (res != null)
+            var apiResources = await _apiService.GetDifficultyResourcesAsync(difficulty);
+            _cache.Clear();
+            foreach (var apiRes in apiResources)
             {
-                res.Quantity += quantity;
-                _repo.UpdateQuantity(name, res.Quantity);
-                ResourceQuantityChanged?.Invoke(name, res.Quantity);
+                var resource = _mapper.Map<Resource>(apiRes);
+                _cache[resource.Name] = resource;
+                ResourceQuantityChanged?.Invoke(resource.Name, resource.Quantity);
             }
         }
 
-        public void SellResource(string name, int quantity)
+        public List<Resource> GetResourcesFromCache()
         {
-            var res = _repo.GetByName(name);
-            if (res != null && res.Quantity >= quantity)
-            {
-                res.Quantity -= quantity;
-                if (res.Quantity <= 0)
-                {
-                    res.Quantity = 0;
-                }
-                _repo.UpdateQuantity(name, res.Quantity);
-                ResourceQuantityChanged?.Invoke(name, res.Quantity);
-            }
+            return _cache.Values.ToList();
+        }
+
+        public Resource? GetResourceByName(string name)
+        {
+            _cache.TryGetValue(name, out var resource);
+            return resource;
         }
     }
 }
