@@ -3,21 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "McDonalds.Api", "McDonalds.Api\McDonalds.Api.csproj", "{C8C23467-FE6D-4D25-A092-0ADEAE8FDA5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "McDonalds.Api", "McDonalds.Api\McDonalds.Api.csproj", "{C8C23467-FE6D-4D25-A092-0ADEAE8FDA5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "McDonalds.Wpf", "McDonalds.Wpf\McDonalds.Wpf.csproj", "{97D0A9ED-C5D1-4D75-A7FA-BD39533E0B9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "McDonalds.Wpf", "McDonalds.Wpf\McDonalds.Wpf.csproj", "{97D0A9ED-C5D1-4D75-A7FA-BD39533E0B9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "McDonalds.Data", "McDonalds.Data\McDonalds.Data.csproj", "{E624090C-0F1F-4D8B-AE12-68376F76EB3D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "McDonalds.Data", "McDonalds.Data\McDonalds.Data.csproj", "{E624090C-0F1F-4D8B-AE12-68376F76EB3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "McDonalds.Contracts", "McDonalds.Contracts\McDonalds.Contracts.csproj", "{F35952D7-BE41-4BD0-BC86-F57ABE6CA293}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "McDonalds.Contracts", "McDonalds.Contracts\McDonalds.Contracts.csproj", "{F35952D7-BE41-4BD0-BC86-F57ABE6CA293}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{C8C23467-FE6D-4D25-A092-0ADEAE8FDA5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -36,5 +33,11 @@ Global
 		{F35952D7-BE41-4BD0-BC86-F57ABE6CA293}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F35952D7-BE41-4BD0-BC86-F57ABE6CA293}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F35952D7-BE41-4BD0-BC86-F57ABE6CA293}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A65A96D9-8338-4233-BD11-F31CEBAE9BE3}
 	EndGlobalSection
 EndGlobal

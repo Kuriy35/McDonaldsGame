@@ -1,33 +1,34 @@
-version: '3.8'
+version: '3.9'
 
 services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong@Passw0rd123
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 8<>/dev/tcp/localhost/1433'"]
+      interval: 10s
+      timeout: 15s
+      retries: 5
+
   api:
     build:
-      context: ./McDonalds.Api
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: McDonalds.Api/Dockerfile
     ports:
       - "8080:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__McDonalds=Server=db;Database=McDonalds;User=sa;Password=YourStrong@Passw0rd123;TrustServerCertificate=true;
     depends_on:
-      - sqlserver
-    networks:
-      - mcdonalds-net
-
-  sqlserver:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    environment:
-      SA_PASSWORD: "YourStrong@Passw0rd"
-      ACCEPT_EULA: "Y"
-    ports:
-      - "1433:1433"
-    volumes:
-      - sql-data:/var/opt/mssql
-    networks:
-      - mcdonalds-net
+      db:
+        condition: service_healthy
 
 volumes:
-  sql-data:
-
-networks:
-  mcdonalds-net:
+  mssql-data:

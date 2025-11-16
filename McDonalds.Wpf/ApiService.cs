@@ -1,6 +1,5 @@
 using System.Net.Http;
 using System.Net.Http.Json;
-using Microsoft.Extensions.Configuration;
 using McDonalds.ViewModels.Api;
 using McDonalds.Models.Core;
 

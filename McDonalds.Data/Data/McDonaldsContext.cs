@@ -8,7 +8,7 @@ namespace McDonalds.Data
         public McDonaldsContext(DbContextOptions<McDonaldsContext> options)
             : base(options)
         {
-            Database.Migrate();
+            //Database.Migrate();
         }
 
         public DbSet<Resource> Resources => Set<Resource>();
@@ -16,11 +16,29 @@ namespace McDonalds.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DifficultyResource>()
-                .HasKey(dr => new { dr.Difficulty, dr.ResourceName });
+            modelBuilder.Entity<DifficultyResource>(entity =>
+            {
+                entity.HasKey(e => new { e.Difficulty, e.ResourceName });
 
-            modelBuilder.Entity<Resource>()
-                .HasKey(r => r.Name);
+                entity.Property(e => e.BuyPrice)
+                      .HasPrecision(18, 2);  
+
+                entity.Property(e => e.SellPrice)
+                      .HasPrecision(18, 2);  
+            });
+
+            modelBuilder.Entity<Resource>(entity =>
+            {
+                entity.HasKey(e => e.Name);
+
+                entity.Property(e => e.BuyPrice)
+                      .HasPrecision(18, 2);  
+
+                entity.Property(e => e.SellPrice)
+                      .HasPrecision(18, 2);  
+            });
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

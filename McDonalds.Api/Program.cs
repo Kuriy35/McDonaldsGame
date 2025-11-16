@@ -5,10 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+//builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+var connectionString = builder.Configuration.GetConnectionString("McDonalds")
+                       ?? Environment.GetEnvironmentVariable("ConnectionStrings__McDonalds");
 
 builder.Services.AddDbContext<McDonaldsContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("McDonalds")));
+    options.UseSqlServer(connectionString));
 
 builder.Services.AddScoped<ResourceRepository>();
 builder.Services.AddAutoMapper(typeof(ApiMappingProfile));
@@ -24,9 +27,13 @@ builder.Services.AddSwaggerGen(c =>
 var app = builder.Build();
 
 app.UseSwagger();
-app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "McDonalds API v1"));
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "McDonalds API v1");
+    c.RoutePrefix = "swagger";
+}
+);
 
-app.UseHttpsRedirection();
 app.MapControllers();
 
 // Автоматична міграція + seed
